@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const webhookRouter = require('./webhook');
 const calendarRouter = require('./calendar');
+const mcpRouter = require('./mcp');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
 // Rutas
 app.use('/webhook', webhookRouter);
 app.use('/calendar', calendarRouter);
+app.use('/mcp', mcpRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
