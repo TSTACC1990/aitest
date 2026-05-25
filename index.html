@@ -555,17 +555,6 @@
           <div class="widget-pulse-ring"></div>
           <div class="widget-pulse-ring"></div>
           <div class="widget-pulse-ring"></div>
-          <!-- 
-            DASHA WIDGET: Replace the button below with your Dasha.ai embed code.
-            Example:
-            <dasha-widget app-id="YOUR_APP_ID" api-key="YOUR_API_KEY"></dasha-widget>
-            <script src="https://unpkg.com/@dasha.ai/widget/dist/index.js"></script>
-          -->
-          <button class="widget-btn" aria-label="Start voice booking">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm-1 18.93A8.001 8.001 0 0 1 4 12H2a10 10 0 0 0 9 9.93V24h2v-2.07A10 10 0 0 0 22 12h-2a8 8 0 0 1-7 7.93z"/>
-            </svg>
-          </button>
         </div>
       </div>
       <p class="widget-hint">Our AI assistant will guide you through the booking</p>
@@ -617,6 +606,22 @@
         const target = document.querySelector(a.getAttribute('href'));
         if (target) target.scrollIntoView({ behavior: 'smooth' });
       });
+    });
+  </script>
+
+  <!-- BlackBox Widget v3 by Dasha.ai -->
+  <blackbox-agent
+    server-url="https://blackbox.dasha.ai"
+    token="wint_P0yQ3uKJx5MFAsobwkdOTkoeecj4X0rr"
+    position="bottom-right"
+    theme="light"
+    skip-discovery
+    data-config='{"features":["AllowWebCall","SendCallResult"],"enableFeatureGating":true,"uiGatingMode":"disable"}'
+  ></blackbox-agent>
+  <script src="https://blackbox.dasha.ai/widget/blackbox-widget-v3.min.js" defer></script>
+  <script>
+    document.querySelector('blackbox-agent')?.addEventListener('bbx:error', (e) => {
+      console.warn('Widget v3 error:', e.detail);
     });
   </script>
 </body>
