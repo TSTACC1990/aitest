@@ -645,7 +645,7 @@
       });
     });
 
-    // Custom button controls Dasha widget
+    // Custom button — clicks Dasha's internal button via Shadow DOM
     let callActive = false;
     const callBtn = document.getElementById('custom-call-btn');
     const iconMic = document.getElementById('icon-mic');
@@ -662,29 +662,60 @@
       widgetHint.textContent = active ? 'Click to end the call' : 'Our AI assistant will guide you through the booking';
     }
 
-    callBtn.addEventListener('click', () => {
+    function clickDashaButton(selector) {
       const agent = document.querySelector('blackbox-agent');
-      if (!agent) return;
+      if (!agent) return false;
+      let btn = agent.querySelector(selector);
+      if (btn) { btn.click(); return true; }
+      if (agent.shadowRoot) {
+        btn = agent.shadowRoot.querySelector(selector);
+        if (btn) { btn.click(); return true; }
+        const children = agent.shadowRoot.querySelectorAll('*');
+        for (const child of children) {
+          if (child.shadowRoot) {
+            btn = child.shadowRoot.querySelector(selector);
+            if (btn) { btn.click(); return true; }
+          }
+        }
+      }
+      return false;
+    }
 
+    callBtn.addEventListener('click', () => {
       if (!callActive) {
-        // Start call — trigger Voice call programmatically
-        agent.dispatchEvent(new CustomEvent('bbx:start-call', { detail: { type: 'voice' } }));
-        setActiveState(true);
+        const selectors = [
+          'button[data-type="voice"]','button[aria-label*="voice"]',
+          'button[aria-label*="Voice"]','button[aria-label*="call"]',
+          'button[aria-label*="Call"]','[class*="voice"]','button'
+        ];
+        let clicked = false;
+        for (const sel of selectors) {
+          if (clickDashaButton(sel)) { clicked = true; break; }
+        }
+        if (clicked) {
+          setActiveState(true);
+          setTimeout(() => {
+            const voiceSels = ['button[data-type="voice"]','button[aria-label*="Voice"]','[class*="voice"]'];
+            for (const sel of voiceSels) { if (clickDashaButton(sel)) break; }
+          }, 800);
+        } else {
+          const agent = document.querySelector('blackbox-agent');
+          if (agent) {
+            agent.style.display = 'block';
+            agent.style.visibility = 'visible';
+            agent.style.pointerEvents = 'all';
+            setActiveState(true);
+          }
+        }
       } else {
-        // End call
-        agent.dispatchEvent(new CustomEvent('bbx:end-call'));
+        const endSels = [
+          'button[aria-label*="end"]','button[aria-label*="End"]',
+          'button[aria-label*="close"]','button[aria-label*="hang"]',
+          '[class*="end"]','[class*="close"]'
+        ];
+        for (const sel of endSels) { if (clickDashaButton(sel)) break; }
         setActiveState(false);
       }
-    });
-
-    // Listen for call end from Dasha side
-    document.querySelector('blackbox-agent')?.addEventListener('bbx:call-ended', () => {
-      setActiveState(false);
-    });
-
-    document.querySelector('blackbox-agent')?.addEventListener('bbx:error', (e) => {
-      console.warn('Widget error:', e.detail);
-      setActiveState(false);
     });
   </script>
 </body>
