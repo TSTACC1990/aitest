@@ -462,11 +462,11 @@
       footer { padding: 2rem; flex-direction: column; gap: 1rem; text-align: center; }
     }
     blackbox-agent {
-  --widget-primary-color: #FF5722;
-  --widget-button-background: #FF5722;
-  --widget-button-hover: #E64A19;
-  --widget-border-radius: 12px;
-}
+      --widget-primary-color: #FF5722;
+      --widget-button-background: #FF5722;
+      --widget-button-hover: #E64A19;
+      --widget-border-radius: 12px;
+    }
   </style>
 </head>
 <body>
@@ -622,7 +622,7 @@
     position="bottom-right"
     theme="dark"
     skip-discovery
-    data-config='{"features":["AllowWebCall","SendCallResult"],"enableFeatureGating":true,"uiGatingMode":"disable"}'
+    data-config='{"features":["AllowWebCall","SendCallResult"],"enableFeatureGating":true,"uiGatingMode":"hide"}'
   ></blackbox-agent>
   <script src="https://blackbox.dasha.ai/widget/blackbox-widget-v3.min.js" defer></script>
   <script>
