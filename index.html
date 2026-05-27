@@ -337,7 +337,7 @@
       max-width: 340px;
     }
 
-    /* Widget container */
+    /* Dasha widget placeholder */
     .widget-container {
       position: relative;
       display: flex;
@@ -352,7 +352,6 @@
       text-transform: uppercase;
       color: rgba(253,252,250,0.3);
       margin-bottom: 2rem;
-      transition: color 0.3s;
     }
 
     .dasha-widget-area {
@@ -366,6 +365,7 @@
       position: relative;
     }
 
+    /* Pulsing ring animation for the widget */
     .widget-pulse {
       position: relative;
       width: 72px; height: 72px;
@@ -398,10 +398,6 @@
       transform: scale(1.08);
       background: #c9b396;
     }
-    .widget-btn.active {
-      background: #c0392b;
-      animation: btn-pulse 1.5s ease-in-out infinite;
-    }
 
     .widget-btn svg {
       width: 26px; height: 26px;
@@ -414,14 +410,6 @@
       color: rgba(253,252,250,0.35);
       letter-spacing: 0.1em;
       text-align: center;
-      transition: color 0.3s;
-    }
-
-    /* Hide the Dasha default widget */
-    blackbox-agent {
-      display: none !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
     }
 
     /* Footer */
@@ -459,10 +447,6 @@
     @keyframes pulse-ring {
       0% { transform: scale(1); opacity: 0.5; }
       100% { transform: scale(2.2); opacity: 0; }
-    }
-    @keyframes btn-pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
     }
 
     /* Responsive */
@@ -565,25 +549,15 @@
       </p>
     </div>
     <div class="widget-container">
-      <p class="widget-label" id="widget-label">Tap to start</p>
+      <p class="widget-label">Tap to start</p>
       <div class="dasha-widget-area">
-        <div class="widget-pulse" id="widget-pulse">
+        <div class="widget-pulse">
           <div class="widget-pulse-ring"></div>
           <div class="widget-pulse-ring"></div>
           <div class="widget-pulse-ring"></div>
-          <button class="widget-btn" id="custom-call-btn" aria-label="Start voice booking">
-            <!-- Mic icon (idle) -->
-            <svg id="icon-mic" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm-1 18.93A8.001 8.001 0 0 1 4 12H2a10 10 0 0 0 9 9.93V24h2v-2.07A10 10 0 0 0 22 12h-2a8 8 0 0 1-7 7.93z"/>
-            </svg>
-            <!-- Stop icon (active) -->
-            <svg id="icon-stop" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none;">
-              <rect x="5" y="5" width="14" height="14" rx="2"/>
-            </svg>
-          </button>
         </div>
       </div>
-      <p class="widget-hint" id="widget-hint">Our AI assistant will guide you through the booking</p>
+      <p class="widget-hint">Our AI assistant will guide you through the booking</p>
     </div>
   </section>
 
@@ -592,35 +566,6 @@
     <div class="footer-logo">Maison Beauty Studio</div>
     <div class="footer-note">© 2024 — All rights reserved</div>
   </footer>
-
-  <!-- Dasha BlackBox Widget — styled to match Maison -->
-  <style>
-    blackbox-agent {
-      --widget-primary-color: #b89e82;
-      --widget-background: #fdfcfa;
-      --widget-header-background: #f7f4ef;
-      --widget-text-primary: #1c1c1a;
-      --widget-text-secondary: #8a8680;
-      --widget-border-color: #e8e4de;
-      --widget-border-radius: 2px;
-      --widget-shadow: 0 10px 40px rgba(28,28,26,0.12);
-      --widget-button-background: #b89e82;
-      --widget-button-text: #fdfcfa;
-      --widget-button-hover: #c9b396;
-      --widget-width: 360px;
-      --widget-offset-x: 24px;
-      --widget-offset-y: 24px;
-    }
-  </style>
-  <blackbox-agent
-    server-url="https://blackbox.dasha.ai"
-    token="wint_P0yQ3uKJx5MFAsobwkdOTkoeecj4X0rr"
-    position="bottom-right"
-    theme="light"
-    skip-discovery
-    data-config='{"features":["AllowWebCall","SendCallResult"],"enableFeatureGating":true,"uiGatingMode":"hide"}'
-  ></blackbox-agent>
-  <script src="https://blackbox.dasha.ai/widget/blackbox-widget-v3.min.js" defer></script>
 
   <script>
     // Custom cursor
@@ -662,44 +607,21 @@
         if (target) target.scrollIntoView({ behavior: 'smooth' });
       });
     });
+  </script>
 
-    // Dasha widget JavaScript API
-    let callActive = false;
-    const callBtn = document.getElementById('custom-call-btn');
-    const iconMic = document.getElementById('icon-mic');
-    const iconStop = document.getElementById('icon-stop');
-    const widgetLabel = document.getElementById('widget-label');
-    const widgetHint = document.getElementById('widget-hint');
-
-    function setActiveState(active) {
-      callActive = active;
-      callBtn.classList.toggle('active', active);
-      iconMic.style.display = active ? 'none' : 'block';
-      iconStop.style.display = active ? 'block' : 'none';
-      widgetLabel.textContent = active ? 'Call in progress' : 'Tap to start';
-      widgetHint.textContent = active ? 'Click to end the call' : 'Our AI assistant will guide you through the booking';
-    }
-
-    // Wait for widget to load then wire up events
-    window.addEventListener('load', () => {
-      const widget = document.querySelector('blackbox-agent');
-      if (!widget) return;
-
-      // Your custom button opens/closes the widget
-      callBtn.addEventListener('click', () => {
-        if (!callActive) {
-          widget.open();
-          setActiveState(true);
-        } else {
-          widget.close();
-          setActiveState(false);
-        }
-      });
-
-      // Sync state with widget events
-      widget.addEventListener('call-started', () => setActiveState(true));
-      widget.addEventListener('call-ended', () => setActiveState(false));
-      widget.addEventListener('widget-closed', () => setActiveState(false));
+  <!-- BlackBox Widget v3 by Dasha.ai -->
+  <blackbox-agent
+    server-url="https://blackbox.dasha.ai"
+    token="wint_P0yQ3uKJx5MFAsobwkdOTkoeecj4X0rr"
+    position="bottom-right"
+    theme="light"
+    skip-discovery
+    data-config='{"features":["AllowWebCall","SendCallResult"],"enableFeatureGating":true,"uiGatingMode":"disable"}'
+  ></blackbox-agent>
+  <script src="https://blackbox.dasha.ai/widget/blackbox-widget-v3.min.js" defer></script>
+  <script>
+    document.querySelector('blackbox-agent')?.addEventListener('bbx:error', (e) => {
+      console.warn('Widget v3 error:', e.detail);
     });
   </script>
 </body>
